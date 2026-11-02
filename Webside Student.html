@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>วิเคราะห์เกรด 5 วิชาหลัก</title>
+    <link href="https://fonts.googleapis.com/css2?family=Mali:wght@500;700&family=Sarabun:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --text: #24203a;
+            --muted: #6a6585;
+            --card: #ffffff;
+            --math: #2563eb;
+            --thai: #dc2626;
+            --sci: #059669;
+            --eng: #7c3aed;
+            --soc: #ea580c;
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Sarabun', sans-serif;
+            color: var(--text);
+            line-height: 1.65;
+            background: linear-gradient(160deg, #fff1f2 0%, #eef2ff 40%, #ecfdf5 100%) fixed;
+        }
+
+        main {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px 16px 60px
+        }
+
+        /* ส่วนหัว */
+        .hero {
+            text-align: center;
+            color: #fff;
+            padding: 30px 20px;
+            border-radius: 22px;
+            margin-bottom: 22px;
+            background: linear-gradient(120deg, #2563eb, #7c3aed, #dc2626, #ea580c);
+        }
+
+        .hero h1 {
+            font-family: 'Mali', sans-serif;
+            font-size: clamp(1.6rem, 5vw, 2.4rem);
+            margin: 0 0 6px
+        }
+
+        .hero p {
+            margin: 0;
+            opacity: .95
+        }
+
+        /* ฟอร์ม */
+        .panel {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 6px 22px rgba(60, 40, 120, .12);
+            margin-bottom: 22px
+        }
+
+        .panel h2 {
+            font-family: 'Mali', sans-serif;
+            margin: 0 0 14px;
+            font-size: 1.3rem
+        }
+
+        .gpa-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 16px
+        }
+
+        .gpa-box label {
+            font-weight: 700
+        }
+
+        input[type=number],
+        select {
+            font: inherit;
+            padding: 10px 14px;
+            border: 2px solid #d9d4f0;
+            border-radius: 12px;
+            background: #fff;
+            color: var(--text)
+        }
+
+        input[type=number] {
+            width: 120px
+        }
+
+        .grades {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px
+        }
+
+        .g-item {
+            border-radius: 16px;
+            padding: 12px;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            gap: 6px
+        }
+
+        .g-item b {
+            font-size: 1.05rem
+        }
+
+        .g-item select {
+            width: 100%;
+            border: 0
+        }
+
+        .actions {
+            margin-top: 18px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap
+        }
+
+        button {
+            font: inherit;
+            font-weight: 700;
+            border: 0;
+            border-radius: 14px;
+            padding: 13px 26px;
+            cursor: pointer;
+            background: linear-gradient(120deg, #7c3aed, #2563eb);
+            color: #fff
+        }
+
+        button.ghost {
+            background: #fff;
+            color: #7c3aed;
+            border: 2px solid #7c3aed
+        }
+
+        button:focus-visible,
+        select:focus-visible,
+        input:focus-visible {
+            outline: 3px solid #f59e0b;
+            outline-offset: 2px
+        }
+
+        /* ผลลัพธ์ */
+        #result {
+            display: none
+        }
+
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 14px;
+            margin-bottom: 22px
+        }
+
+        .stat {
+            border-radius: 18px;
+            padding: 16px;
+            color: #fff
+        }
+
+        .stat small {
+            opacity: .9;
+            display: block
+        }
+
+        .stat strong {
+            font-size: 1.5rem;
+            font-family: 'Mali', sans-serif
+        }
+
+        .s1 {
+            background: linear-gradient(135deg, #7c3aed, #a78bfa)
+        }
+
+        .s2 {
+            background: linear-gradient(135deg, #059669, #34d399);
+            color: #053d2c
+        }
+
+        .s3 {
+            background: linear-gradient(135deg, #dc2626, #f87171)
+        }
+
+        .overall {
+            background: #fff;
+            border-left: 8px solid #7c3aed;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 22px;
+            box-shadow: 0 4px 16px rgba(60, 40, 120, .1)
+        }
+
+        .plan {
+            background: #fff;
+            border-radius: 18px;
+            padding: 16px;
+            margin-bottom: 22px;
+            box-shadow: 0 4px 16px rgba(60, 40, 120, .1)
+        }
+
+        .plan ol {
+            margin: 8px 0 0;
+            padding-left: 22px
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 18px;
+            box-shadow: 0 6px 22px rgba(60, 40, 120, .12)
+        }
+
+        .card-head {
+            padding: 16px 18px;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap
+        }
+
+        .card-head h3 {
+            margin: 0;
+            font-family: 'Mali', sans-serif;
+            font-size: 1.3rem
+        }
+
+        .grade-pill {
+            background: rgba(255, 255, 255, .25);
+            border-radius: 99px;
+            padding: 4px 14px;
+            font-weight: 700
+        }
+
+        .card-body {
+            padding: 16px 18px
+        }
+
+        .level {
+            display: inline-block;
+            font-weight: 700;
+            border-radius: 99px;
+            padding: 3px 14px;
+            margin-bottom: 8px
+        }
+
+        .lv-high {
+            background: #d1fae5;
+            color: #065f46
+        }
+
+        .lv-mid {
+            background: #fef3c7;
+            color: #92400e
+        }
+
+        .lv-low {
+            background: #fee2e2;
+            color: #991b1b
+        }
+
+        .track {
+            height: 10px;
+            background: #ece9f7;
+            border-radius: 99px;
+            overflow: hidden;
+            margin: 8px 0 14px
+        }
+
+        .track i {
+            display: block;
+            height: 100%;
+            width: 0;
+            border-radius: 99px;
+            transition: width .8s ease
+        }
+
+        .card h4 {
+            margin: 14px 0 6px;
+            font-size: 1.02rem
+        }
+
+        .card ul {
+            margin: 0;
+            padding-left: 20px
+        }
+
+        .chips span {
+            display: inline-block;
+            border-radius: 99px;
+            padding: 3px 12px;
+            margin: 3px 4px 0 0;
+            font-size: .92rem;
+            font-weight: 600;
+            color: #fff
+        }
+
+        @media (prefers-reduced-motion:reduce) {
+            .track i {
+                transition: none
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <header class="hero">
+            <h1>📊 วิเคราะห์เกรด 5 วิชาหลัก</h1>
+            <p>กรอกเกรดของคุณ แล้วดูจุดแข็ง จุดอ่อน และเนื้อหาที่ควรเก็บต่อ</p>
+        </header>
+
+        <section class="panel">
+            <h2>กรอกเกรดของคุณ</h2>
+            <div class="gpa-box">
+                <label for="gpa">เกรดเฉลี่ยรวม (GPA)</label>
+                <input type="number" id="gpa" min="0" max="4" step="0.01" placeholder="เช่น 3.25">
+                <small style="color:var(--muted)">ถ้าเว้นว่าง ระบบจะใช้ค่าเฉลี่ยของ 5 วิชาแทน</small>
+            </div>
+            <div class="grades" id="grades"></div>
+            <div class="actions">
+                <button id="go">วิเคราะห์เลย</button>
+                <button id="reset" class="ghost" type="button">ล้างค่า</button>
+            </div>
+        </section>
+
+        <section id="result" aria-live="polite">
+            <div class="summary" id="summary"></div>
+            <div class="overall" id="overall"></div>
+            <div class="plan" id="plan"></div>
+            <div id="cards"></div>
+        </section>
+    </main>
+
+    <script>
+        const GRADES = [4, 3.5, 3, 2.5, 2, 1.5, 1, 0];
+
+        const subjects = [
+            {
+                id: 'math', name: 'คณิตศาสตร์', emoji: '🔢', color: '#2563eb', grad: 'linear-gradient(120deg,#1d4ed8,#3b82f6)',
+                tips: {
+                    high: ['ท้าทายตัวเองด้วยโจทย์ข้อสอบแข่งขันหรือข้อสอบเข้ามหาวิทยาลัย', 'ลองอธิบายวิธีคิดให้เพื่อนฟัง จะช่วยให้เข้าใจลึกขึ้น', 'จับเวลาทำโจทย์เพื่อฝึกความเร็วและความแม่นยำ'],
+                    mid: ['ทำโจทย์ซ้ำในหัวข้อที่เคยพลาด และจดสาเหตุที่ผิด', 'ทำสมุดสรุปสูตรพร้อมตัวอย่างโจทย์ 1 ข้อต่อสูตร', 'ฝึกวันละ 5–10 ข้อ ให้สม่ำเสมอ'],
+                    low: ['กลับไปทวนพื้นฐานก่อน อย่าข้ามไปทำโจทย์ยากทันที', 'เริ่มจากโจทย์ง่ายวันละ 5 ข้อ แล้วค่อยเพิ่มระดับ', 'ถามครูหรือเพื่อนทันทีเมื่อติดขัด อย่าปล่อยให้สะสม']
+                },
+                topics: {
+                    high: ['แคลคูลัสเบื้องต้น', 'เมทริกซ์', 'จำนวนเชิงซ้อน', 'ความน่าจะเป็นขั้นสูง'],
+                    mid: ['ฟังก์ชัน', 'ตรีโกณมิติ', 'ลำดับและอนุกรม', 'สถิติ'],
+                    low: ['เลขยกกำลังและราก', 'สมการและอสมการ', 'อัตราส่วนและร้อยละ', 'เรขาคณิตพื้นฐาน']
+                }
+            },
+            {
+                id: 'thai', name: 'ภาษาไทย', emoji: '📖', color: '#dc2626', grad: 'linear-gradient(120deg,#b91c1c,#ef4444)',
+                tips: {
+                    high: ['อ่านวรรณกรรมหลายแนว แล้วลองเขียนวิเคราะห์ของตัวเอง', 'ส่งผลงานเขียนหรือร่วมการประกวดเรียงความ/โต้วาที', 'ฝึกการนำเสนอและการพูดต่อหน้าผู้ฟัง'],
+                    mid: ['ฝึกสรุปความจากบทความสั้นๆ ทุกวัน', 'จดหลักภาษาเป็นตารางแล้วหาตัวอย่างประกอบ', 'อ่านวรรณคดีแล้วจับประเด็นหลัก ตัวละคร และข้อคิด'],
+                    low: ['เริ่มจากอ่านบทความสั้นแล้วหาใจความสำคัญให้ได้', 'ทบทวนหลักภาษาพื้นฐานทีละหัวข้อ', 'ฝึกเขียนประโยคและย่อหน้าสั้นๆ วันละ 1 ย่อหน้า']
+                },
+                topics: {
+                    high: ['การวิเคราะห์วรรณคดี', 'เรียงความเชิงวิเคราะห์', 'การพูดและโต้วาที', 'ภาษาไทยเพื่อการสอบ'],
+                    mid: ['หลักภาษา ชนิดและหน้าที่ของคำ', 'ฉันทลักษณ์ (กาพย์ โคลง กลอน)', 'การอ่านจับใจความ', 'ราชาศัพท์และระดับภาษา'],
+                    low: ['การอ่านจับใจความ', 'การสะกดคำที่มักเขียนผิด', 'ชนิดของคำและประโยค', 'การเขียนย่อหน้า']
+                }
+            },
+            {
+                id: 'sci', name: 'วิทยาศาสตร์', emoji: '🔬', color: '#059669', grad: 'linear-gradient(120deg,#047857,#10b981)',
+                tips: {
+                    high: ['ทำโครงงานหรือเข้าร่วมแข่งขันวิทยาศาสตร์', 'เชื่อมเนื้อหากับเรื่องรอบตัวและข่าวเทคโนโลยี', 'ฝึกโจทย์เชิงวิเคราะห์ที่ต้องใช้หลายแนวคิดรวมกัน'],
+                    mid: ['ทำแผนผังความคิดสรุปแต่ละบท', 'ดูคลิปการทดลองเพื่อเห็นภาพจริง', 'แยกฝึกโจทย์คำนวณกับโจทย์ท่องจำ ให้ครบทั้งสองแบบ'],
+                    low: ['ทำความเข้าใจแนวคิดหลักก่อนท่องจำ', 'ดูวิดีโอสั้นๆ ทีละหัวข้อ แล้วสรุปด้วยคำพูดตัวเอง', 'ทวนศัพท์และหน่วยวัดพื้นฐานให้แม่น']
+                },
+                topics: {
+                    high: ['ฟิสิกส์: กลศาสตร์และไฟฟ้า', 'เคมีอินทรีย์', 'พันธุศาสตร์', 'โครงงานวิทยาศาสตร์'],
+                    mid: ['โมลและสมการเคมี', 'แรงและการเคลื่อนที่', 'ระบบอวัยวะในร่างกาย', 'ตารางธาตุและพันธะเคมี'],
+                    low: ['การวัดและหน่วย', 'สมบัติของสาร', 'แรงและการเคลื่อนที่เบื้องต้น', 'เซลล์และสิ่งมีชีวิต']
+                }
+            },
+            {
+                id: 'eng', name: 'ภาษาอังกฤษ', emoji: '🌍', color: '#7c3aed', grad: 'linear-gradient(120deg,#6d28d9,#8b5cf6)',
+                tips: {
+                    high: ['ฟังพอดแคสต์หรือข่าวภาษาอังกฤษเป็นประจำ', 'เขียนเรียงความสั้นๆ แล้วให้ครูหรือเพื่อนช่วยตรวจ', 'ลองทำข้อสอบมาตรฐาน เช่น IELTS, TOEIC'],
+                    mid: ['จดศัพท์ใหม่วันละ 5 คำ พร้อมประโยคตัวอย่าง', 'อ่านบทความสั้นภาษาอังกฤษทุกวัน', 'ฝึก Grammar แล้วนำมาใช้ในการเขียนจริง'],
+                    low: ['เริ่มจากไวยากรณ์พื้นฐานและประโยคง่ายๆ', 'ดูสื่อที่มีซับไตเติลภาษาอังกฤษ', 'ฝึกพูดประโยคสั้นๆ ทุกวัน แม้จะพูดคนเดียวก็ตาม']
+                },
+                topics: {
+                    high: ['Academic Reading', 'Essay Writing', 'Listening: ข่าวและพอดแคสต์', 'ศัพท์ระดับสูงสำหรับสอบ'],
+                    mid: ['Tenses ครบทุกแบบ', 'Conditionals', 'Passive Voice', 'Reading: Main Idea'],
+                    low: ['Present/Past/Future Tense พื้นฐาน', 'ศัพท์พื้นฐาน 500 คำ', 'โครงสร้างประโยคง่ายๆ', 'บทสนทนาในชีวิตประจำวัน']
+                }
+            },
+            {
+                id: 'soc', name: 'สังคมศึกษา', emoji: '🏛️', color: '#ea580c', grad: 'linear-gradient(120deg,#c2410c,#f97316)',
+                tips: {
+                    high: ['เชื่อมเหตุการณ์ปัจจุบันกับเนื้อหาที่เรียน', 'ฝึกเขียนวิเคราะห์เหตุและผลของเหตุการณ์สำคัญ', 'ลองอ่านหนังสือหรือสารคดีเชิงลึกเพิ่ม'],
+                    mid: ['ทำไทม์ไลน์เหตุการณ์สำคัญเพื่อจำง่าย', 'ใช้แผนที่และแผนภูมิประกอบการเรียนภูมิศาสตร์', 'สรุปแต่ละบทเป็นตารางเปรียบเทียบ'],
+                    low: ['เรียนเป็นเรื่องเล่า เชื่อมเหตุการณ์ต่อกันแทนการท่องทีละข้อ', 'ใช้ไทม์ไลน์และแผนที่ช่วยจำ', 'ทวนทีละบทสั้นๆ วันละ 15–20 นาที']
+                },
+                topics: {
+                    high: ['เศรษฐศาสตร์เชิงวิเคราะห์', 'ประวัติศาสตร์สากลเชื่อมโยงไทย', 'กฎหมายและรัฐธรรมนูญ', 'ภูมิรัฐศาสตร์'],
+                    mid: ['ประวัติศาสตร์ไทยยุคสำคัญ', 'ภูมิศาสตร์: ภูมิอากาศและทวีป', 'อุปสงค์และอุปทาน', 'หน้าที่พลเมืองและรัฐธรรมนูญ'],
+                    low: ['ประวัติศาสตร์ไทยพื้นฐาน', 'แผนที่และภูมิศาสตร์เบื้องต้น', 'ศาสนาและวัฒนธรรม', 'สิทธิและหน้าที่พลเมือง']
+                }
+            }
+        ];
+
+        const levelOf = g => g >= 3.5 ? 'high' : g >= 2.5 ? 'mid' : 'low';
+        const levelText = { high: '💪 จุดแข็ง', mid: '👍 พอใช้ ยังพัฒนาได้', low: '⚠️ จุดอ่อน ควรเร่งเสริม' };
+
+        /* สร้างช่องเลือกเกรด */
+        const gradesBox = document.getElementById('grades');
+        subjects.forEach(s => {
+            const d = document.createElement('div');
+            d.className = 'g-item';
+            d.style.background = s.grad;
+            d.innerHTML = `<b>${s.emoji} ${s.name}</b>
+    <select id="g-${s.id}" aria-label="เกรด${s.name}">
+      ${GRADES.map(g => `<option value="${g}" ${g === 3 ? 'selected' : ''}>เกรด ${g}</option>`).join('')}
+    </select>`;
+            gradesBox.appendChild(d);
+        });
+
+        document.getElementById('go').onclick = () => {
+            const data = subjects.map(s => ({ ...s, g: parseFloat(document.getElementById('g-' + s.id).value) }));
+            const avg = data.reduce((a, b) => a + b.g, 0) / data.length;
+            const gpaInput = parseFloat(document.getElementById('gpa').value);
+            const gpa = (!isNaN(gpaInput) && gpaInput >= 0 && gpaInput <= 4) ? gpaInput : avg;
+            const usedAvg = gpa === avg && (isNaN(gpaInput) || gpaInput < 0 || gpaInput > 4);
+
+            const sorted = [...data].sort((a, b) => b.g - a.g);
+            const best = sorted[0], worst = sorted[sorted.length - 1];
+
+            /* สรุปด้านบน */
+            document.getElementById('summary').innerHTML = `
+    <div class="stat s1"><small>เกรดเฉลี่ยรวม ${usedAvg ? '(จากค่าเฉลี่ย 5 วิชา)' : ''}</small><strong>${gpa.toFixed(2)}</strong></div>
+    <div class="stat s2"><small>วิชาที่แข็งที่สุด</small><strong>${best.emoji} ${best.name} (${best.g})</strong></div>
+    <div class="stat s3"><small>วิชาที่ควรเสริมที่สุด</small><strong>${worst.emoji} ${worst.name} (${worst.g})</strong></div>`;
+
+            /* ภาพรวม */
+            let overallMsg;
+            if (gpa >= 3.5) overallMsg = 'ผลการเรียนโดยรวมดีมาก รักษาความสม่ำเสมอไว้ แล้วใช้เวลาที่เหลือต่อยอดด้วยโจทย์ระดับสูงหรือกิจกรรมแข่งขัน';
+            else if (gpa >= 2.5) overallMsg = 'ผลการเรียนโดยรวมอยู่ในเกณฑ์ดี ถ้าเสริมวิชาที่อ่อนที่สุดอีกหน่อย เกรดเฉลี่ยจะขยับขึ้นได้ชัดเจน';
+            else overallMsg = 'ตอนนี้ควรโฟกัสที่พื้นฐานก่อน เลือกทีละวิชา ทวนวันละน้อยแต่ทำทุกวัน แล้วผลจะดีขึ้นเรื่อยๆ';
+            const gap = best.g - worst.g;
+            document.getElementById('overall').innerHTML = `<strong>ภาพรวม:</strong> ${overallMsg}<br>
+    <span style="color:var(--muted)">ช่องว่างระหว่างวิชาที่ดีที่สุดกับต่ำที่สุดคือ ${gap.toFixed(1)} ${gap >= 1.5 ? '(ค่อนข้างห่าง ควรจัดเวลาให้วิชาที่อ่อนมากขึ้น)' : '(ค่อนข้างสมดุล)'}</span>`;
+
+            /* ลำดับการเรียน */
+            const order = [...data].sort((a, b) => a.g - b.g);
+            document.getElementById('plan').innerHTML = `<h2 style="font-family:'Mali',sans-serif;margin:0">🗓️ ลำดับที่ควรให้เวลา (เริ่มจากวิชาที่อ่อนที่สุด)</h2>
+    <ol>${order.map(s => `<li><b>${s.emoji} ${s.name}</b> (เกรด ${s.g})</li>`).join('')}</ol>`;
+
+            /* การ์ดแต่ละวิชา */
+            document.getElementById('cards').innerHTML = data.map(s => {
+                const lv = levelOf(s.g);
+                const diff = s.g - gpa;
+                const diffText = Math.abs(diff) < 0.05 ? 'ใกล้เคียงเกรดเฉลี่ยรวม'
+                    : diff > 0 ? `สูงกว่าเกรดเฉลี่ยรวม ${diff.toFixed(2)}` : `ต่ำกว่าเกรดเฉลี่ยรวม ${Math.abs(diff).toFixed(2)}`;
+                return `<article class="card">
+      <div class="card-head" style="background:${s.grad}">
+        <h3>${s.emoji} ${s.name}</h3>
+        <span class="grade-pill">เกรด ${s.g}</span>
+      </div>
+      <div class="card-body">
+        <span class="level lv-${lv}">${levelText[lv]}</span>
+        <div style="color:var(--muted)">${diffText}</div>
+        <div class="track"><i data-w="${s.g / 4 * 100}" style="background:${s.color}"></i></div>
+        <h4>✅ วิธีเสริม</h4>
+        <ul>${s.tips[lv].map(t => `<li>${t}</li>`).join('')}</ul>
+        <h4>📚 เนื้อหาที่ควรเก็บต่อ</h4>
+        <div class="chips">${s.topics[lv].map(t => `<span style="background:${s.color}">${t}</span>`).join('')}</div>
+      </div>
+    </article>`;
+            }).join('');
+
+            const r = document.getElementById('result');
+            r.style.display = 'block';
+            requestAnimationFrame(() => document.querySelectorAll('.track i').forEach(i => i.style.width = i.dataset.w + '%'));
+            r.scrollIntoView({ behavior: 'smooth' });
+        };
+
+        document.getElementById('reset').onclick = () => {
+            document.getElementById('gpa').value = '';
+            subjects.forEach(s => document.getElementById('g-' + s.id).value = 3);
+            document.getElementById('result').style.display = 'none';
+        };
+    </script>
+</body>
+
+</html>
